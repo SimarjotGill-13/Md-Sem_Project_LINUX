@@ -1,0 +1,58 @@
+==========================================
+         DAILY USER LOG ARCHIVER
+==========================================
+Date: Mon Oct 20 22:23:13 IST 2025
+User: simarjotkaurgill
+Uptime: 22:23  up 15:07, 2 users, load averages: 1.83 1.96 1.86
+
+----- Logged in users (who) -----
+simarjotkaurgill console      20 Oct 07:16 
+simarjotkaurgill ttys001      20 Oct 21:59 
+
+----- Top 5 CPU-consuming processes -----
+  PID COMM             %MEM  %CPU
+    1 /sbin/launchd     0.1   0.0
+  304 /usr/libexec/log  0.3   0.1
+  305 /usr/libexec/smd  0.0   0.0
+  306 /usr/libexec/Use  0.1   0.1
+  308 /System/Library/  0.0   0.0
+
+----- Disk Usage (df -h) -----
+Filesystem                                                  Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1s1                                             228Gi    10Gi    82Gi    12%    426k  864M    0%   /
+devfs                                                      202Ki   202Ki     0Bi   100%     700     0  100%   /dev
+/dev/disk3s6                                               228Gi    20Ki    82Gi     1%       0  864M    0%   /System/Volumes/VM
+/dev/disk3s2                                               228Gi   6.6Gi    82Gi     8%    1.2k  864M    0%   /System/Volumes/Preboot
+/dev/disk3s4                                               228Gi   6.2Mi    82Gi     1%      55  864M    0%   /System/Volumes/Update
+/dev/disk1s2                                               500Mi   6.0Mi   482Mi     2%       1  4.9M    0%   /System/Volumes/xarts
+/dev/disk1s1                                               500Mi   5.8Mi   482Mi     2%      29  4.9M    0%   /System/Volumes/iSCPreboot
+/dev/disk1s3                                               500Mi   1.7Mi   482Mi     1%      97  4.9M    0%   /System/Volumes/Hardware
+/dev/disk3s5                                               228Gi   128Gi    82Gi    61%    1.1M  864M    0%   /System/Volumes/Data
+map auto_home                                                0Bi     0Bi     0Bi   100%       0     0     -   /System/Volumes/Data/home
+/Users/simarjotkaurgill/Downloads/Visual Studio Code.app   228Gi   126Gi    84Gi    60%    1.1M  882M    0%   /private/var/folders/nq/qhb5d6hn1xld9rb0gpfdq0gh0000gn/T/AppTranslocation/EC8A214A-DFD6-4742-A2BF-0CC70E2D5A7E
+
+----- Memory Info -----
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                              127260.
+Pages active:                            324528.
+Pages inactive:                          324231.
+Pages speculative:                         2980.
+Pages throttled:                              0.
+Pages wired down:                        128591.
+Pages purgeable:                          24162.
+"Translation faults":                  57922445.
+Pages copy-on-write:                    5136537.
+Pages zero filled:                     64323753.
+Pages reactivated:                      1606465.
+Pages purged:                           1467269.
+File-backed pages:                       288233.
+Anonymous pages:                         363506.
+Pages stored in compressor:              287632.
+Pages occupied by compressor:            101487.
+Decompressions:                          500953.
+Compressions:                           1311948.
+Pageins:                                1430901.
+Pageouts:                                 17915.
+Swapins:                                      0.
+Swapouts:                                     0.
+==========================================

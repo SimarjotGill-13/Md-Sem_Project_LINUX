@@ -1,80 +1,43 @@
 #!/bin/bash
-# Daily User Log Archiver
+
+set -euo pipefail
 
 LOG_DIR="$HOME/daily_logs"
 ARCHIVE_DIR="$LOG_DIR/archive"
-TODAY_FILENAME="log_$(date +%Y-%m-%d).txt"
-LOG_FILE="$LOG_DIR/$TODAY_FILENAME"
-WEEKLY_ARCHIVE="$ARCHIVE_DIR/weekly_logs_$(date +%Y-%m-%d).tar.gz"
+MONTHLY_SUMMARY="$LOG_DIR/monthly_summary.txt"
 
-# create directories if missing
-if [ ! -d "$LOG_DIR" ]; then
-  mkdir -p "$LOG_DIR" || { echo "ERROR: can't create $LOG_DIR"; exit 1; }
-fi
-if [ ! -d "$ARCHIVE_DIR" ]; then
-  mkdir -p "$ARCHIVE_DIR" || { echo "ERROR: can't create $ARCHIVE_DIR"; exit 1; }
-fi
+mkdir -p "$LOG_DIR" "$ARCHIVE_DIR"
+touch "$MONTHLY_SUMMARY"
 
-# create or update today's log file
-touch "$LOG_FILE" || { echo "ERROR: cannot create $LOG_FILE"; exit 1; }
+NOW=$(date +'%Y-%m-%d_%H-%M-%S')
+LOG_FILE="$LOG_DIR/log_$NOW.txt"
 
-# collect info and write into log
+# ---- Create today's log ----
 {
-  echo "=========================================="
-  echo "         DAILY USER LOG ARCHIVER"
-  echo "=========================================="
+  echo "Daily log: $NOW"
+  echo "User: ${USER:-$(whoami)}"
   echo "Date: $(date)"
-  echo "User: $(whoami)"
-  # macOS 'uptime' doesn't support -p, so use plain uptime
-  echo "Uptime: $(uptime)"
-  echo
-  echo "----- Logged in users (who) -----"
-  who || true
-  echo
-  echo "----- Top 5 CPU-consuming processes -----"
-  # macOS friendly ps: use -A or -ax to list all processes
-  ps -axo pid,comm,%mem,%cpu | head -n 6 || true
-  echo
-  echo "----- Disk Usage (df -h) -----"
-  df -h || true
-  echo
-  echo "----- Memory Info -----"
-  # macOS doesn't have free, use vm_stat
-  if command -v free >/dev/null 2>&1; then
-    free -h || true
-  else
-    vm_stat || true
-  fi
-  echo "=========================================="
-} > "$LOG_FILE"
+  echo "Uptime:"
+  uptime
+  echo "--- Top Processes ---"
+  ps aux | sort -nrk 3 | head -n 6
+  echo "----------------------"
+} >> "$LOG_FILE"
 
-# make sure file has content
-if [ ! -s "$LOG_FILE" ]; then
-  echo "ERROR: $LOG_FILE is empty or not written."
-  exit 1
-fi
+# ---- Move .txt logs older than 7 days to archive ----
+find "$LOG_DIR" \
+  -type d -name "$(basename "$ARCHIVE_DIR")" -prune -o \
+  -type f -name "log_*.txt" -mtime +7 -exec mv -n {} "$ARCHIVE_DIR" \;
 
-echo "Log file created: $LOG_FILE"
-
-# move logs older than 7 days to archive
-find "$LOG_DIR" -maxdepth 1 -type f -name "log_*.txt" -mtime +7 -exec mv {} "$ARCHIVE_DIR" \; 2>/dev/null || true
-
-# compress archived logs if any
+# ---- Compress archived .txt files (only if any exist) ----
 if ls "$ARCHIVE_DIR"/*.txt >/dev/null 2>&1; then
-  tar -czf "$WEEKLY_ARCHIVE" -C "$ARCHIVE_DIR" -- *.txt 2>/dev/null || true
-  # remove text logs after successful archive (if tar created file)
-  [ -f "$WEEKLY_ARCHIVE" ] && rm -f "$ARCHIVE_DIR"/*.txt 2>/dev/null || true
+    TARFILE="$ARCHIVE_DIR/archive_$(date +%Y-%m-%d).tar.gz"
+    ( cd "$ARCHIVE_DIR" && tar -czf "$(basename "$TARFILE")" -- *.txt )
+    rm "$ARCHIVE_DIR"/*.txt
 fi
 
-# cleanup old archives
-find "$ARCHIVE_DIR" -type f -name "*.tar.gz" -mtime +30 -delete 2>/dev/null || true
+# ---- Update summary ----
+echo "[$(date)] Created: $LOG_FILE" >> "$MONTHLY_SUMMARY"
 
-echo "Daily User Log Archiver run completed."
-# === Copy latest log to project folder ===
-PROJECT_DIR="$HOME/Daily-User-Log-Archiver"
-if [ -f "$LOG_FILE" ]; then
-    cp "$LOG_FILE" "$PROJECT_DIR"/ 2>/dev/null
-    echo "Copied latest log file to project folder: $PROJECT_DIR"
-else
-    echo " Log file not found to copy!"
-fi
+echo "Done. Log saved at: $LOG_FILE"
+exit 0

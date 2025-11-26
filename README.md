@@ -10,7 +10,7 @@ It is created as part of the **Mid Term Project – Linux Lab** assignment.
 To create a shell script that:
 - Logs **system information** (user, date, running processes, disk usage)
 - Rotates and archives old logs weekly
-- Schedules itself to run **daily** using `cron`
+- Schedules itself to run **daily** using 'plist' instead of `cron`.
 - Implements **error handling** for missing directories and files
 
 ---
